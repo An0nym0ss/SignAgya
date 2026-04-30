@@ -98,3 +98,8 @@ python manage-server.py restart   # Restart servers
 - Python 3.10+ with TensorFlow 2.x
 - Node.js 18+
 - Webcam
+
+## Contributors
+
+- An0nym0ss
+- nabin-khadka
