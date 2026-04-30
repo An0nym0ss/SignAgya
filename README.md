@@ -33,22 +33,41 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. Start both servers
+### 3. Start the servers
 
+**Terminal 1 - Start Backend:**
 ```bash
-python manage-server.py start
+.venv\Scripts\python backend/src/server.py    # Windows
+# or
+source .venv/bin/activate && python backend/src/server.py    # Linux/Mac
 ```
 
-Open `http://localhost:5173` on the host machine.
-From another device on the same network: `http://<host-ip>:5173`
-
-### Other commands
-
+**Terminal 2 - Start Frontend:**
 ```bash
-python manage-server.py status    # Check server status
-python manage-server.py stop      # Stop servers
-python manage-server.py restart   # Restart servers
+npm run dev
 ```
+
+Frontend will be available at:
+- **Local PC**: `http://localhost:5173`
+- **Local Network**: `http://<your-pc-ip>:5173` (e.g., `http://192.168.1.113:5173`)
+
+### 4. (Optional) Run on any device with camera access using HTTPS
+
+For accessing the app from external networks or ensuring camera access works on all devices, use localtunnel:
+
+**Terminal 3 - Start Tunnel:**
+```bash
+npx localtunnel --port 5173
+```
+
+This will output a public HTTPS URL like: `https://thin-emus-show.loca.lt`
+
+**Access Points:**
+| Device Type | URL | Camera Access |
+|---|---|---|
+| This PC | `http://localhost:5173` | ✓ Yes |
+| Local Network | `http://192.168.1.113:5173` | ⚠️ Check browser |
+| External / Any Device | `https://thin-emus-show.loca.lt` | ✓ Yes |
 
 ## Project Structure
 
@@ -57,8 +76,7 @@ python manage-server.py restart   # Restart servers
 ├── index.html / index.tsx      # Entry points
 ├── constants.ts                # Shared constants, Devanagari maps, sign aliases
 ├── types.ts                    # TypeScript interfaces
-├── vite.config.ts              # Vite config (proxy /api → backend)
-├── manage-server.py            # Server management script
+├── vite.config.ts              # Vite config (proxy /api → backend, host 0.0.0.0)
 ├── components/
 │   ├── SignGame.tsx             # Main game controller
 │   ├── CameraView.tsx          # MediaPipe camera + landmark extraction

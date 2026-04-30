@@ -4,6 +4,9 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
+  define: {
+    __API_URL__: JSON.stringify(process.env.API_URL || 'http://localhost:8000'),
+  },
   server: {
     port: 5173,
     host: '0.0.0.0',
