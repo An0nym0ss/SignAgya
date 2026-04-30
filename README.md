@@ -15,6 +15,12 @@ LSTM/Attention models for sign classification.
 
 ## Quick Start
 
+### Prerequisites
+- Python 3.10+
+- Node.js 18+
+- Webcam
+- ngrok account (free) - [Sign up here](https://dashboard.ngrok.com)
+
 ### 1. Install frontend dependencies
 
 ```bash
@@ -33,41 +39,85 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. Start the servers
+### 3. Configure ngrok (One-time setup)
 
-**Terminal 1 - Start Backend:**
+Get your ngrok authtoken from https://dashboard.ngrok.com/get-started/your-authtoken
+
+```bash
+ngrok config add-authtoken YOUR_AUTHTOKEN_HERE
+```
+
+### 4. Start all services (4 terminals required)
+
+Open 4 separate terminals in your project directory:
+
+**Terminal 1 - Backend:**
 ```bash
 .venv\Scripts\python backend/src/server.py    # Windows
 # or
 source .venv/bin/activate && python backend/src/server.py    # Linux/Mac
 ```
 
-**Terminal 2 - Start Frontend:**
+**Terminal 2 - Frontend:**
 ```bash
 npm run dev
 ```
 
-Frontend will be available at:
-- **Local PC**: `http://localhost:5173`
-- **Local Network**: `http://<your-pc-ip>:5173` (e.g., `http://192.168.1.113:5173`)
-
-### 4. (Optional) Run on any device with camera access using HTTPS
-
-For accessing the app from external networks or ensuring camera access works on all devices, use localtunnel:
-
-**Terminal 3 - Start Tunnel:**
+**Terminal 3 - Backend ngrok tunnel:**
 ```bash
-npx localtunnel --port 5173
+ngrok http 8000
+```
+Copy the HTTPS URL shown (e.g., `https://abc-def-ghi.ngrok-free.dev`)
+
+**Terminal 4 - Frontend ngrok tunnel:**
+```bash
+ngrok http 5173
 ```
 
-This will output a public HTTPS URL like: `https://thin-emus-show.loca.lt`
+### 5. Set environment variables and restart frontend
+
+Before running frontend, set the backend API URL. In **Terminal 2**, stop it (Ctrl+C) and run:
+
+**Windows:**
+```bash
+set VITE_API_URL=https://<BACKEND_NGROK_URL>/predict
+set VITE_NSL_API_URL=https://<BACKEND_NGROK_URL>/predict_nsl
+npm run dev
+```
+
+**Linux/Mac:**
+```bash
+export VITE_API_URL=https://<BACKEND_NGROK_URL>/predict
+export VITE_NSL_API_URL=https://<BACKEND_NGROK_URL>/predict_nsl
+npm run dev
+```
+
+Replace `<BACKEND_NGROK_URL>` with the URL from Terminal 3 (without `/predict` at the end).
+
+### 6. Access the app
+
+Use the **FRONTEND ngrok URL** from Terminal 4 to access the app from any device:
+
+```
+https://<FRONTEND_NGROK_URL>
+```
 
 **Access Points:**
-| Device Type | URL | Camera Access |
-|---|---|---|
-| This PC | `http://localhost:5173` | ✓ Yes |
-| Local Network | `http://192.168.1.113:5173` | ⚠️ Check browser |
-| External / Any Device | `https://thin-emus-show.loca.lt` | ✓ Yes |
+| Device Type | URL | Camera Access | Notes |
+|---|---|---|---|
+| This PC | `http://localhost:5173` | ✓ Yes | Local only |
+| Local Network | `http://192.168.1.113:5173` | ⚠️ Mixed | Same WiFi only |
+| Any Device (Recommended) | `https://<frontend-ngrok-url>` | ✓ Yes | Works anywhere, requires HTTPS |
+
+**Example:**
+```
+Frontend URL: https://nigel-bagwigged-first.ngrok-free.dev
+Backend URL: https://example-backend-123.ngrok-free.dev
+
+Then set:
+VITE_API_URL=https://example-backend-123.ngrok-free.dev/predict
+VITE_NSL_API_URL=https://example-backend-123.ngrok-free.dev/predict_nsl
+```
 
 ## Project Structure
 
